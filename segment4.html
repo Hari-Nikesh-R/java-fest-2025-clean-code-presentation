@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment 4: From Logic to Clean Code</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <style>
+        .reveal .slides section {
+            text-align: left;
+        }
+        .reveal .slides section.center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section class="center">
+                <h1>4️⃣ From Logic to Clean Code</h1>
+                <h2>Real Practices</h2>
+                <p style="color: #7f8c8d; margin-top: 2em;">⏱️ 20 minutes</p>
+                <p style="margin-top: 1em;"><a href="index.html">← Back to Menu</a></p>
+            </section>
+
+            <!-- Objective -->
+            <section>
+                <h2>Objective</h2>
+                <p>Introduce industry-standard habits early.</p>
+                <ul>
+                    <li class="fragment">Code formatting & indentation</li>
+                    <li class="fragment">Method design (single responsibility)</li>
+                    <li class="fragment">Error handling best practices</li>
+                    <li class="fragment">Logging vs System.out.println()</li>
+                    <li class="fragment">Commenting — when and how much</li>
+                </ul>
+            </section>
+
+            <!-- Code Formatting -->
+            <section>
+                <h2>Code Formatting & Indentation</h2>
+                <p><strong>Why it matters:</strong> Readability impacts debugging speed</p>
+                <div class="fragment">
+                    <h3>Best Practices:</h3>
+                    <ul>
+                        <li>Consistent indentation (4 spaces or 1 tab)</li>
+                        <li>Proper spacing around operators</li>
+                        <li>Line length: 80-120 characters max</li>
+                        <li>Consistent brace style</li>
+                        <li>Use IDE auto-formatting</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Formatting Example -->
+            <section>
+                <h2>Formatting Example</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Poor Formatting</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public void process(int x,String y){
+if(x>0){
+if(y!=null){
+System.out.println("Valid");
+}}}}
+                        </code></pre>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ Good Formatting</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public void process(int x, String y) {
+    if (x > 0) {
+        if (y != null) {
+            System.out.println("Valid");
+        }
+    }
+}
+                        </code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Method Design -->
+            <section>
+                <h2>Method Design: Single Responsibility</h2>
+                <p><strong>Principle:</strong> A method should do one thing and do it well</p>
+                <div class="fragment">
+                    <h3>Benefits:</h3>
+                    <ul>
+                        <li>Easier to understand</li>
+                        <li>Easier to test</li>
+                        <li>Easier to maintain</li>
+                        <li>Easier to reuse</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Method Design Bad Example -->
+            <section>
+                <h2>❌ Bad: Method Does Too Much</h2>
+                <pre><code class="java" data-trim data-line-numbers style="font-size: 0.75em;">
+public void processUserData(String name, String email, int age, String[] hobbies) {
+    // Validation
+    if (name == null || name.isEmpty()) {
+        System.out.println("Error: Name required");
+        return;
+    }
+    if (email == null || !email.contains("@")) {
+        System.out.println("Error: Invalid email");
+        return;
+    }
+    
+    // Processing
+    String formattedName = name.substring(0, 1).toUpperCase() 
+        + name.substring(1).toLowerCase();
+    String domain = email.substring(email.indexOf("@") + 1);
+    
+    // Database operations
+    // db.save(formattedName, email, age);
+    
+    // Email sending
+    // emailService.sendWelcomeEmail(email);
+    
+    // Logging
+    System.out.println("User processed: " + formattedName);
+}
+                </code></pre>
+            </section>
+
+            <!-- Method Design Good Example -->
+            <section>
+                <h2>✅ Good: Single Responsibility</h2>
+                <pre><code class="java" data-trim data-line-numbers style="font-size: 0.75em;">
+public void processUserData(String name, String email, int age, String[] hobbies) {
+    if (!isValidUserData(name, email, age)) {
+        return;
+    }
+    
+    String formattedName = formatName(name);
+    String domain = extractDomain(email);
+    
+    saveUser(formattedName, email, age);
+    sendWelcomeEmail(email);
+    logUserProcessed(formattedName, domain, hobbies.length);
+}
+
+private boolean isValidUserData(String name, String email, int age) {
+    return isValidName(name) && isValidEmail(email) && isValidAge(age);
+}
+
+private String formatName(String name) {
+    return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/MethodDesign.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Short Methods -->
+            <section>
+                <h2>Keep Methods Short</h2>
+                <ul>
+                    <li class="fragment"><strong>Rule of thumb:</strong> Methods should fit on one screen (~20-30 lines)</li>
+                    <li class="fragment">If a method is too long, extract smaller methods</li>
+                    <li class="fragment">Each method should have a clear, single purpose</li>
+                    <li class="fragment">Short methods are easier to test and debug</li>
+                </ul>
+            </section>
+
+            <!-- Error Handling -->
+            <section>
+                <h2>Error Handling Best Practices</h2>
+                <div class="fragment">
+                    <h3>✅ Do:</h3>
+                    <ul>
+                        <li>Use specific exceptions</li>
+                        <li>Handle exceptions at appropriate level</li>
+                        <li>Use try-with-resources for cleanup</li>
+                        <li>Create custom exceptions when needed</li>
+                        <li>Log exceptions with context</li>
+                    </ul>
+                </div>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>❌ Don't:</h3>
+                    <ul>
+                        <li>Catch generic <code>Exception</code> unless necessary</li>
+                        <li>Swallow exceptions silently</li>
+                        <li>Ignore checked exceptions</li>
+                        <li>Use exceptions for control flow</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Error Handling Example -->
+            <section>
+                <h2>Error Handling Example</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// ✅ GOOD - Specific exceptions
+try (FileReader reader = new FileReader(filename)) {
+    // Read file...
+} catch (FileNotFoundException e) {
+    System.err.println("File not found: " + filename);
+} catch (IOException e) {
+    System.err.println("Error reading file: " + e.getMessage());
+}
+
+// ✅ GOOD - Custom exceptions
+public void validateUser(String email, int age) throws InvalidUserException {
+    if (email == null || !email.contains("@")) {
+        throw new InvalidUserException("Invalid email: " + email);
+    }
+    if (age < 0 || age > 150) {
+        throw new InvalidUserException("Invalid age: " + age);
+    }
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/ErrorHandling.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Logging -->
+            <section>
+                <h2>Logging vs System.out.println()</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ System.out.println()</h4>
+                        <ul style="font-size: 0.8em;">
+                            <li>No log levels</li>
+                            <li>Always prints</li>
+                            <li>Can't redirect easily</li>
+                            <li>Not professional</li>
+                        </ul>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ Logger</h4>
+                        <ul style="font-size: 0.8em;">
+                            <li>Configurable levels</li>
+                            <li>Can disable in production</li>
+                            <li>Redirect to files/databases</li>
+                            <li>Industry standard</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Logging Example -->
+            <section>
+                <h2>Logging Example</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// ❌ BAD
+System.out.println("Processing order: " + orderId);
+System.out.println("Error: " + error);
+
+// ✅ GOOD
+private static final Logger logger = Logger.getLogger(MyClass.class.getName());
+
+logger.info("Processing order: " + orderId);
+logger.severe("Error occurred: " + error);
+logger.fine("Debug info: " + debugInfo);  // Only in debug mode
+                </code></pre>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>Log Levels (most to least severe):</h3>
+                    <ul style="font-size: 0.9em;">
+                        <li><code>SEVERE</code> - Critical errors</li>
+                        <li><code>WARNING</code> - Unexpected but recoverable</li>
+                        <li><code>INFO</code> - General information</li>
+                        <li><code>FINE/FINER/FINEST</code> - Detailed tracing</li>
+                    </ul>
+                </div>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/LoggingExample.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Commenting -->
+            <section>
+                <h2>Commenting: When and How Much?</h2>
+                <div class="fragment">
+                    <h3>✅ Good Comments:</h3>
+                    <ul>
+                        <li>Explain <strong>why</strong>, not <strong>what</strong></li>
+                        <li>Document complex algorithms</li>
+                        <li>Clarify business rules</li>
+                        <li>JavaDoc for public APIs</li>
+                    </ul>
+                </div>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>❌ Bad Comments:</h3>
+                    <ul>
+                        <li>Obvious code explanations</li>
+                        <li>Outdated comments</li>
+                        <li>Commented-out code</li>
+                        <li>Redundant comments</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Commenting Examples -->
+            <section>
+                <h2>Commenting Examples</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// ❌ BAD - Obvious comment
+int count = 0;  // Initialize count to zero
+
+// ✅ GOOD - Explains why
+// Using 0.95 multiplier to account for 5% processing fee
+double finalAmount = amount * 0.95;
+
+// ✅ GOOD - JavaDoc
+/**
+ * Calculates the total price including tax.
+ * 
+ * @param basePrice the base price before tax
+ * @param taxRate the tax rate as a decimal (e.g., 0.08 for 8%)
+ * @return the total price including tax
+ */
+public double calculateTotalPrice(double basePrice, double taxRate) {
+    return basePrice * (1 + taxRate);
+}
+                </code></pre>
+            </section>
+
+            <!-- Activity: Refactoring -->
+            <section>
+                <h2>Activity: Refactor in Pairs</h2>
+                <div class="activity-box">
+                    <h3>Your Task:</h3>
+                    <p>Refactor the buggy method. Focus on:</p>
+                    <ul>
+                        <li>Reducing nesting</li>
+                        <li>Extracting methods</li>
+                        <li>Improving readability</li>
+                        <li>Adding error handling</li>
+                        <li>Using proper logging</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Buggy Method -->
+            <section>
+                <h2>Buggy Method to Refactor</h2>
+                <pre><code class="java" data-trim data-line-numbers style="font-size: 0.7em;">
+public void processData(String[] data, int maxSize, boolean validate) {
+    int count = 0;
+    String result = "";
+    
+    if (data != null) {
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] != null) {
+                if (validate) {
+                    if (data[i].length() > 0) {
+                        if (count < maxSize) {
+                            result = result + data[i] + ",";
+                            count++;
+                        } else {
+                            System.out.println("Max size reached");
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    System.out.println("Result: " + result);
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/BuggyMethod.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Refactoring Hints -->
+            <section>
+                <h2>Refactoring Hints</h2>
+                <ul>
+                    <li class="fragment">Extract validation logic into separate methods</li>
+                    <li class="fragment">Use early returns to reduce nesting</li>
+                    <li class="fragment">Use <code>StringBuilder</code> instead of string concatenation</li>
+                    <li class="fragment">Add input validation for <code>maxSize</code></li>
+                    <li class="fragment">Replace <code>System.out.println</code> with proper logging</li>
+                    <li class="fragment">Extract the loop logic into a separate method</li>
+                </ul>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li class="fragment">Format code consistently - use IDE auto-format</li>
+                    <li class="fragment">Keep methods short and focused on one responsibility</li>
+                    <li class="fragment">Handle errors properly with specific exceptions</li>
+                    <li class="fragment">Use logging instead of System.out.println()</li>
+                    <li class="fragment">Comment to explain why, not what</li>
+                    <li class="fragment">Refactor regularly to keep code clean</li>
+                </ul>
+            </section>
+
+            <!-- Next -->
+            <section class="center">
+                <h2>Ready for Modern Java?</h2>
+                <p>Let's explore Java 17-21 features!</p>
+                <p style="margin-top: 2em;">
+                    <a href="segment5.html">Next: Segment 5 →</a> | 
+                    <a href="index.html">Back to Menu</a>
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [ RevealHighlight ]
+        });
+    </script>
+</body>
+</html>
+

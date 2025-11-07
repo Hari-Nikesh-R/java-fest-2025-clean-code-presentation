@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonus: Refactoring Challenge</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <style>
+        .reveal .slides section {
+            text-align: left;
+        }
+        .reveal .slides section.center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section class="center">
+                <h1>🎁 Bonus Challenge</h1>
+                <h2>Refactor Old Java to Modern Java 21</h2>
+                <p style="color: #7f8c8d; margin-top: 2em;">⏱️ Optional Activity</p>
+                <p style="margin-top: 1em;"><a href="index.html">← Back to Menu</a></p>
+            </section>
+
+            <!-- Challenge Introduction -->
+            <section>
+                <h2>The Challenge</h2>
+                <div class="activity-box">
+                    <h3>Your Mission:</h3>
+                    <p>Refactor this old-school Java code into modern Java 21 style!</p>
+                    <ul>
+                        <li>Use Stream API</li>
+                        <li>Apply modern Java features</li>
+                        <li>Reduce nesting</li>
+                        <li>Improve readability</li>
+                        <li>Make it maintainable</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Old Code -->
+            <section>
+                <h2>Old-School Java Code</h2>
+                <pre><code class="java" data-trim data-line-numbers style="font-size: 0.7em;">
+public List&lt;String&gt; processUsers(List&lt;User&gt; users) {
+    List&lt;String&gt; result = new ArrayList&lt;String&gt;();
+    
+    if (users != null) {
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            if (user != null) {
+                String name = user.getName();
+                if (name != null) {
+                    if (name.length() > 0) {
+                        int age = user.getAge();
+                        if (age >= 18) {
+                            String email = user.getEmail();
+                            if (email != null) {
+                                if (email.contains("@")) {
+                                    String upperName = name.toUpperCase();
+                                    String formatted = upperName + " (" + age + ")";
+                                    result.add(formatted);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return result;
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/RefactoringChallenge.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Issues to Fix -->
+            <section>
+                <h2>Issues to Fix</h2>
+                <ul>
+                    <li class="fragment">❌ Deep nesting (7 levels!)</li>
+                    <li class="fragment">❌ Traditional for loop</li>
+                    <li class="fragment">❌ Manual null checks everywhere</li>
+                    <li class="fragment">❌ String concatenation in loop</li>
+                    <li class="fragment">❌ No separation of concerns</li>
+                    <li class="fragment">❌ Hard to test</li>
+                    <li class="fragment">❌ Not using modern Java features</li>
+                </ul>
+            </section>
+
+            <!-- Refactoring Hints -->
+            <section>
+                <h2>Refactoring Hints</h2>
+                <ol>
+                    <li class="fragment">Use <strong>Stream API</strong> instead of loops</li>
+                    <li class="fragment">Use <strong>var</strong> keyword where appropriate</li>
+                    <li class="fragment">Consider <strong>Records</strong> for User class</li>
+                    <li class="fragment">Use <strong>filter()</strong> to reduce nesting</li>
+                    <li class="fragment">Extract <strong>validation methods</strong></li>
+                    <li class="fragment">Use <strong>method references</strong> where possible</li>
+                    <li class="fragment">Use <strong>String.formatted()</strong> or text blocks</li>
+                </ol>
+            </section>
+
+            <!-- Solution Preview -->
+            <section>
+                <h2>Modern Java 21 Solution</h2>
+                <pre><code class="java" data-trim data-line-numbers style="font-size: 0.75em;">
+public List&lt;String&gt; processUsers(List&lt;User&gt; users) {
+    if (users == null) {
+        return List.of();
+    }
+    
+    return users.stream()
+        .filter(this::isValidUser)
+        .map(this::formatUser)
+        .toList();
+}
+
+private boolean isValidUser(User user) {
+    return user != null
+        && isValidName(user.getName())
+        && isAdult(user.getAge())
+        && isValidEmail(user.getEmail());
+}
+
+private String formatUser(User user) {
+    return "%s (%d)".formatted(
+        user.getName().toUpperCase(),
+        user.getAge()
+    );
+}
+                </code></pre>
+            </section>
+
+            <!-- Solution Benefits -->
+            <section>
+                <h2>Solution Benefits</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Old Code</h4>
+                        <ul style="font-size: 0.8em;">
+                            <li>30+ lines</li>
+                            <li>7 levels of nesting</li>
+                            <li>Hard to read</li>
+                            <li>Hard to test</li>
+                            <li>Imperative style</li>
+                        </ul>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ New Code</h4>
+                        <ul style="font-size: 0.8em;">
+                            <li>~15 lines</li>
+                            <li>Flat structure</li>
+                            <li>Clear intent</li>
+                            <li>Easy to test</li>
+                            <li>Declarative style</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Full Solution -->
+            <section>
+                <h2>Complete Modern Solution</h2>
+                <pre><code class="java" data-trim data-line-numbers style="font-size: 0.65em;">
+// Using Records (Java 14+)
+public record UserRecord(String name, int age, String email) {
+    public UserRecord {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be blank");
+        }
+        if (age < 0) {
+            throw new IllegalArgumentException("Age cannot be negative");
+        }
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("Invalid email");
+        }
+    }
+}
+
+// Processing with modern Java
+public List&lt;String&gt; processUsersModern(List&lt;UserRecord&gt; users) {
+    return users.stream()
+        .filter(user -> user.age() >= 18)
+        .map(user -> "%s (%d)".formatted(
+            user.name().toUpperCase(),
+            user.age()
+        ))
+        .toList();  // Java 16+ - simpler!
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/RefactoringChallengeSolution.java" target="_blank">View full solution →</a>
+                </p>
+            </section>
+
+            <!-- Key Improvements -->
+            <section>
+                <h2>Key Improvements</h2>
+                <ul>
+                    <li class="fragment"><strong>Stream API:</strong> Declarative, readable, functional</li>
+                    <li class="fragment"><strong>Records:</strong> Eliminated boilerplate, immutable by default</li>
+                    <li class="fragment"><strong>Method Extraction:</strong> Each method has single responsibility</li>
+                    <li class="fragment"><strong>Early Returns:</strong> Reduced nesting significantly</li>
+                    <li class="fragment"><strong>Modern Syntax:</strong> <code>toList()</code>, <code>formatted()</code></li>
+                    <li class="fragment"><strong>Testability:</strong> Each method can be tested independently</li>
+                </ul>
+            </section>
+
+            <!-- Discussion -->
+            <section>
+                <h2>Discussion: Best Approaches</h2>
+                <div class="activity-box">
+                    <h3>Share your solution!</h3>
+                    <p>Discuss:</p>
+                    <ul>
+                        <li>What modern features did you use?</li>
+                        <li>How did you reduce nesting?</li>
+                        <li>What would you do differently?</li>
+                        <li>Any challenges you faced?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Winner Shoutout -->
+            <section class="center">
+                <h2>🎉 Winner Shoutout</h2>
+                <p>Best refactoring approaches will be discussed!</p>
+                <div class="fragment" style="margin-top: 2em;">
+                    <h3>Criteria for Best Solution:</h3>
+                    <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                        <li>Readability</li>
+                        <li>Use of modern Java features</li>
+                        <li>Testability</li>
+                        <li>Maintainability</li>
+                        <li>Creativity</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Final Thoughts -->
+            <section>
+                <h2>Final Thoughts</h2>
+                <ul>
+                    <li class="fragment">Modern Java makes code cleaner and more maintainable</li>
+                    <li class="fragment">Refactoring is a skill that improves with practice</li>
+                    <li class="fragment">Always consider readability and testability</li>
+                    <li class="fragment">Keep learning new Java features</li>
+                    <li class="fragment">Apply these practices in your projects</li>
+                </ul>
+            </section>
+
+            <!-- End -->
+            <section class="center">
+                <h1>Thank You! 🙏</h1>
+                <h2>Keep Coding, Keep Learning!</h2>
+                <p style="margin-top: 2em;">
+                    <a href="index.html">← Back to Menu</a>
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [ RevealHighlight ]
+        });
+    </script>
+</body>
+</html>
+

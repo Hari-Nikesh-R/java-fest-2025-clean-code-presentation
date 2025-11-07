@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment 2: Getting Back to Basics</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <style>
+        .reveal .slides section {
+            text-align: left;
+        }
+        .reveal .slides section.center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section class="center">
+                <h1>2️⃣ Getting Back to Basics</h1>
+                <h2>The Right Way</h2>
+                <p style="color: #7f8c8d; margin-top: 2em;">⏱️ 20 minutes</p>
+                <p style="margin-top: 1em;"><a href="index.html">← Back to Menu</a></p>
+            </section>
+
+            <!-- Objective -->
+            <section>
+                <h2>Objective</h2>
+                <p>Refresh core Java concepts with a best-practice lens.</p>
+                <ul>
+                    <li class="fragment">Proper variable naming and scoping</li>
+                    <li class="fragment">Understanding immutability</li>
+                    <li class="fragment">Primitive vs Wrapper classes</li>
+                    <li class="fragment">Code readability over cleverness</li>
+                </ul>
+            </section>
+
+            <!-- Variable Naming -->
+            <section>
+                <h2>Proper Variable Naming</h2>
+                <p><strong>Rule of Thumb:</strong> Names should reveal intent</p>
+                <div class="fragment">
+                    <h3>❌ Bad Naming</h3>
+                    <pre><code class="java" data-trim>
+int x;           // What is x?
+String s;        // What is s?
+int temp;        // Temporary what?
+void calc(int a, int b);  // Calculate what?
+                    </code></pre>
+                </div>
+                <div class="fragment">
+                    <h3>✅ Good Naming</h3>
+                    <pre><code class="java" data-trim>
+int studentAge;
+String studentName;
+int totalScore;
+void calculateTotalScore(int mathScore, int scienceScore);
+                    </code></pre>
+                </div>
+            </section>
+
+            <!-- Naming Examples Code -->
+            <section>
+                <h2>Naming Examples</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// ❌ BAD NAMING
+public class BadNaming {
+    int x;  // What does x represent?
+    String s;  // What is s?
+    int temp;  // Temporary for what?
+    
+    void calc(int a, int b) {  // Calculate what?
+        int r = a + b;
+        return r;
+    }
+}
+
+// ✅ GOOD NAMING
+public class GoodNaming {
+    private int studentAge;
+    private String studentName;
+    private int totalScore;
+    
+    public int calculateTotalScore(int mathScore, int scienceScore) {
+        int total = mathScore + scienceScore;
+        return total;
+    }
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/NamingExamples.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Naming Conventions -->
+            <section>
+                <h2>Java Naming Conventions</h2>
+                <ul>
+                    <li class="fragment"><strong>Classes:</strong> <code>PascalCase</code> (e.g., <code>UserAccount</code>)</li>
+                    <li class="fragment"><strong>Methods/Variables:</strong> <code>camelCase</code> (e.g., <code>calculateTotal()</code>)</li>
+                    <li class="fragment"><strong>Constants:</strong> <code>UPPER_SNAKE_CASE</code> (e.g., <code>MAX_RETRY_ATTEMPTS</code>)</li>
+                    <li class="fragment"><strong>Packages:</strong> <code>lowercase</code> (e.g., <code>com.example.util</code>)</li>
+                </ul>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>More Examples:</h3>
+                    <ul>
+                        <li>❌ Bad: <code>d</code>, <code>dt</code>, <code>n</code>, <code>cnt</code></li>
+                        <li>✅ Good: <code>distance</code>, <code>dateTime</code>, <code>numberOfStudents</code>, <code>count</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Understanding Immutability -->
+            <section>
+                <h2>Understanding Immutability</h2>
+                <p><strong>Immutability:</strong> Once created, cannot be changed</p>
+                <div class="fragment">
+                    <h3>Benefits:</h3>
+                    <ul>
+                        <li>Thread-safe (no synchronization needed)</li>
+                        <li>No side effects</li>
+                        <li>Easier to reason about</li>
+                        <li>Prevents accidental modifications</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Immutability Examples -->
+            <section>
+                <h2>Immutability in Java</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// ✅ Using final for constants
+private static final int MAX_RETRY_ATTEMPTS = 3;
+private static final String API_BASE_URL = "https://api.example.com";
+
+// ✅ Using final for immutable references
+private final String userId;  // Cannot be reassigned
+private final int accountNumber;
+
+public ImmutabilityDemo(String userId, int accountNumber) {
+    this.userId = userId;
+    this.accountNumber = accountNumber;
+}
+
+// ✅ String is immutable
+String name = "Java";
+name = name + " Programming";  // Creates NEW String object
+                </code></pre>
+            </section>
+
+            <!-- Immutability Full Example -->
+            <section>
+                <h2>Immutability Demo</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// ✅ Immutable collections (Java 9+)
+var numbers = List.of(1, 2, 3, 4, 5);
+// numbers.add(6);  // ❌ UnsupportedOperationException
+
+var uniqueNames = Set.of("Alice", "Bob", "Charlie");
+var config = Map.of("host", "localhost", "port", "8080");
+
+// ✅ Benefits:
+// - Thread-safe
+// - No side effects
+// - Easier to reason about
+// - Prevents accidental modifications
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/ImmutabilityDemo.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Primitive vs Wrapper -->
+            <section>
+                <h2>Primitive vs Wrapper Classes</h2>
+                <p><strong>When to use what?</strong></p>
+                <div class="fragment">
+                    <h3>✅ Use Primitives For:</h3>
+                    <ul>
+                        <li>Performance-critical code</li>
+                        <li>Local variables</li>
+                        <li>Calculations</li>
+                        <li>When null doesn't make sense</li>
+                    </ul>
+                </div>
+                <div class="fragment">
+                    <h3>✅ Use Wrapper Classes For:</h3>
+                    <ul>
+                        <li>Collections (List, Set, Map)</li>
+                        <li>Nullable values</li>
+                        <li>Generic types</li>
+                        <li>When null is meaningful</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Primitive Wrapper Examples -->
+            <section>
+                <h2>Primitive vs Wrapper: Examples</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// ✅ Use Primitives
+int count = 0;           // Fast, no object overhead
+double price = 99.99;    // Direct value storage
+boolean isActive = true;
+
+// ✅ Use Wrappers
+List&lt;Integer&gt; numbers = new ArrayList&lt;&gt;();
+numbers.add(10);  // Autoboxing: int -> Integer
+
+Integer userId = getUserById(123);  // Can be null
+if (userId != null) {
+    System.out.println("User ID: " + userId);
+}
+                </code></pre>
+            </section>
+
+            <!-- Autoboxing Warning -->
+            <section>
+                <h2>⚠️ Watch Out for Autoboxing Overhead</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// ❌ Creates new Integer object each time
+Integer sum = 0;
+for (int i = 0; i < 1000; i++) {
+    sum += i;  // Autoboxing/unboxing overhead
+}
+
+// ✅ Better: Use primitive
+int sumBetter = 0;
+for (int i = 0; i < 1000; i++) {
+    sumBetter += i;  // No overhead
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/PrimitiveWrapperDemo.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Code Readability -->
+            <section>
+                <h2>Code Readability > Cleverness</h2>
+                <div class="fragment">
+                    <h3>❌ Clever but Unclear</h3>
+                    <pre><code class="java" data-trim>
+return (x > 0 && y != null && y.length() > 5) ? 
+    z.stream().mapToInt(i -> i * 2).sum() : 0;
+                    </code></pre>
+                </div>
+                <div class="fragment">
+                    <h3>✅ Clear and Readable</h3>
+                    <pre><code class="java" data-trim>
+if (!isValidInput(x, y)) {
+    return 0;
+}
+return calculateSumOfDoubledValues(z);
+                    </code></pre>
+                </div>
+                <p class="fragment"><strong>Remember:</strong> Code is read 10x more than it's written</p>
+            </section>
+
+            <!-- Activity: Refactoring Challenge -->
+            <section>
+                <h2>Activity: Refactoring Challenge</h2>
+                <div class="activity-box">
+                    <h3>Your Task:</h3>
+                    <p>Rewrite this messy code cleanly. Focus on:</p>
+                    <ul>
+                        <li>Meaningful names</li>
+                        <li>Reducing nesting</li>
+                        <li>Extracting methods</li>
+                        <li>Proper encapsulation</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Messy Code Example -->
+            <section>
+                <h2>Messy Code to Refactor</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+public class MessyCode {
+    int x;
+    String y;
+    int[] z;
+    
+    public void process(int a, String b, int[] c) {
+        x = a;
+        y = b;
+        z = c;
+        if (x > 0) {
+            if (y != null) {
+                if (y.length() > 0) {
+                    if (z != null) {
+                        if (z.length > 0) {
+                            int sum = 0;
+                            for (int i = 0; i < z.length; i++) {
+                                sum = sum + z[i];
+                            }
+                            double avg = sum / z.length;
+                            if (avg > 50) {
+                                System.out.println("Good");
+                            } else {
+                                System.out.println("Bad");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/MessyCode.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Refactoring Hints -->
+            <section>
+                <h2>Refactoring Hints</h2>
+                <ul>
+                    <li class="fragment">Use meaningful names: <code>count</code> instead of <code>x</code></li>
+                    <li class="fragment">Extract validation methods: <code>isValidInput()</code></li>
+                    <li class="fragment">Use early returns to reduce nesting</li>
+                    <li class="fragment">Separate concerns: validation, calculation, display</li>
+                    <li class="fragment">Add proper encapsulation with private fields</li>
+                </ul>
+                <div class="fragment" style="margin-top: 1em;">
+                    <p><strong>Share your refactored version!</strong></p>
+                </div>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li class="fragment">Names should reveal intent - use descriptive names</li>
+                    <li class="fragment">Use <code>final</code> for immutability when possible</li>
+                    <li class="fragment">Choose primitives for performance, wrappers for nullability</li>
+                    <li class="fragment">Readability beats cleverness every time</li>
+                    <li class="fragment">Reduce nesting with early returns and extracted methods</li>
+                </ul>
+            </section>
+
+            <!-- Next -->
+            <section class="center">
+                <h2>Ready for OOP?</h2>
+                <p>Let's learn Object-Oriented Thinking Done Right!</p>
+                <p style="margin-top: 2em;">
+                    <a href="segment3.html">Next: Segment 3 →</a> | 
+                    <a href="index.html">Back to Menu</a>
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [ RevealHighlight ]
+        });
+    </script>
+</body>
+</html>
+

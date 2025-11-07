@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment 5: Modern Java Features</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <style>
+        .reveal .slides section {
+            text-align: left;
+        }
+        .reveal .slides section.center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section class="center">
+                <h1>5️⃣ Modern Java</h1>
+                <h2>Features That Make Life Easier</h2>
+                <p style="color: #7f8c8d; margin-top: 2em;">⏱️ 15 minutes</p>
+                <p style="margin-top: 1em;"><a href="index.html">← Back to Menu</a></p>
+            </section>
+
+            <!-- Objective -->
+            <section>
+                <h2>Objective</h2>
+                <p>Show how modern Java versions (Java 17–21) simplify everyday code.</p>
+                <ul>
+                    <li class="fragment"><code>var</code> keyword and type inference</li>
+                    <li class="fragment">Enhanced switch expressions</li>
+                    <li class="fragment">Records for lightweight data holders</li>
+                    <li class="fragment">Pattern matching (<code>instanceof</code>)</li>
+                    <li class="fragment">Stream API sneak peek</li>
+                </ul>
+            </section>
+
+            <!-- var Keyword -->
+            <section>
+                <h2>var Keyword (Java 10+)</h2>
+                <p><strong>Local Variable Type Inference</strong> - Let the compiler infer the type</p>
+                <div class="fragment">
+                    <h3>❌ Old Way</h3>
+                    <pre><code class="java" data-trim>
+String name = "Java";
+List&lt;String&gt; names = List.of("Alice", "Bob");
+Map&lt;String, Integer&gt; scores = new HashMap&lt;&gt;();
+                    </code></pre>
+                </div>
+                <div class="fragment">
+                    <h3>✅ New Way</h3>
+                    <pre><code class="java" data-trim>
+var name = "Java";  // Inferred as String
+var names = List.of("Alice", "Bob");  // Inferred as List&lt;String&gt;
+var scores = new HashMap&lt;String, Integer&gt;();  // Inferred type
+                    </code></pre>
+                </div>
+                <div class="fragment" style="margin-top: 1em;">
+                    <p><strong>Note:</strong> <code>var</code> is NOT a type - it's type inference!</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>❌ <code>var x;</code> - Error: must initialize</li>
+                        <li>❌ <code>var x = null;</code> - Error: can't infer from null</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Enhanced Switch -->
+            <section>
+                <h2>Enhanced Switch Expressions (Java 14+)</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Old Switch</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.75em;">
+String dayName;
+switch (day) {
+    case 1:
+        dayName = "Monday";
+        break;
+    case 2:
+        dayName = "Tuesday";
+        break;
+    default:
+        dayName = "Unknown";
+}
+return dayName;
+                        </code></pre>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ New Switch</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.75em;">
+return switch (day) {
+    case 1 -> "Monday";
+    case 2 -> "Tuesday";
+    case 3 -> "Wednesday";
+    default -> "Unknown";
+};
+                        </code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Switch with Yield -->
+            <section>
+                <h2>Switch with yield</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+return switch (day) {
+    case 1, 2, 3, 4, 5 -> "Weekday";
+    case 6, 7 -> "Weekend";
+    default -> {
+        System.out.println("Invalid day");
+        yield "Unknown";  // Use yield for complex expressions
+    }
+};
+                </code></pre>
+                <p class="fragment"><strong>Benefits:</strong> No fall-through, more concise, expression-based</p>
+            </section>
+
+            <!-- Records -->
+            <section>
+                <h2>Records (Java 14+) - Lightweight Data Holders</h2>
+                <p><strong>Problem:</strong> Writing data classes requires lots of boilerplate</p>
+                <div class="fragment">
+                    <h3>❌ Old Way - Lots of Boilerplate</h3>
+                    <pre><code class="java" data-trim style="font-size: 0.7em;">
+public class Person {
+    private final String name;
+    private final int age;
+    
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    
+    @Override
+    public boolean equals(Object o) { /* ... */ }
+    @Override
+    public int hashCode() { /* ... */ }
+    @Override
+    public String toString() { /* ... */ }
+}
+                    </code></pre>
+                </div>
+            </section>
+
+            <!-- Records New Way -->
+            <section>
+                <h2>✅ New Way - Records</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+public record Person(String name, int age) {
+    // Automatically gets:
+    // - Constructor
+    // - Getters (name(), age())
+    // - equals(), hashCode(), toString()
+    // - Immutable by default
+}
+
+// Usage
+Person person = new Person("Alice", 30);
+System.out.println(person.name());  // Getter
+System.out.println(person);  // toString() auto-implemented
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/RecordExample.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Pattern Matching -->
+            <section>
+                <h2>Pattern Matching for instanceof (Java 16+)</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Old Way</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.75em;">
+if (obj instanceof String) {
+    String str = (String) obj;  // Manual cast
+    System.out.println(str.length());
+}
+                        </code></pre>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ New Way</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.75em;">
+if (obj instanceof String str) {  // Automatic cast
+    System.out.println(str.length());  // str is already String
+}
+                        </code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pattern Matching Switch -->
+            <section>
+                <h2>Pattern Matching in Switch (Java 21+)</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+String result = switch (obj) {
+    case String s -> "String: " + s;
+    case Integer i -> "Integer: " + i;
+    case null -> "Null";
+    default -> "Unknown";
+};
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/PatternMatching.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Stream API Introduction -->
+            <section>
+                <h2>Stream API - Functional Programming</h2>
+                <p><strong>Philosophy:</strong> Declarative programming - say <em>what</em> you want, not <em>how</em></p>
+                <div class="fragment">
+                    <h3>Key Operations:</h3>
+                    <ul>
+                        <li><code>filter()</code> - Keep elements matching condition</li>
+                        <li><code>map()</code> - Transform elements</li>
+                        <li><code>collect()</code> - Gather results</li>
+                        <li><code>findFirst()</code> - Get first match</li>
+                        <li><code>count()</code> - Count elements</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Loop to Stream Comparison -->
+            <section>
+                <h2>Loop vs Stream: Which Would You Maintain?</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Traditional Loop</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+List&lt;String&gt; result = new ArrayList&lt;&gt;();
+for (String name : names) {
+    if (name != null && name.length() > 3) {
+        String upper = name.toUpperCase();
+        result.add(upper);
+    }
+}
+                        </code></pre>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ Stream API</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+List&lt;String&gt; result = names.stream()
+    .filter(name -> name != null && name.length() > 3)
+    .map(String::toUpperCase)
+    .collect(Collectors.toList());
+                        </code></pre>
+                    </div>
+                </div>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/LoopToStream.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Stream Benefits -->
+            <section>
+                <h2>Stream API Benefits</h2>
+                <ul>
+                    <li class="fragment"><strong>More Readable:</strong> Declarative style</li>
+                    <li class="fragment"><strong>Easier to Parallelize:</strong> <code>parallelStream()</code></li>
+                    <li class="fragment"><strong>Less Boilerplate:</strong> No manual loops</li>
+                    <li class="fragment"><strong>Functional Style:</strong> Immutable operations</li>
+                    <li class="fragment"><strong>Composable:</strong> Chain operations easily</li>
+                </ul>
+            </section>
+
+            <!-- Quick Demo -->
+            <section>
+                <h2>Quick Demo: Stream Conversion</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// Find sum of even numbers
+// ❌ Old way
+int sum = 0;
+for (int num : numbers) {
+    if (num % 2 == 0) {
+        sum += num;
+    }
+}
+
+// ✅ New way
+int sum = numbers.stream()
+    .filter(num -> num % 2 == 0)
+    .mapToInt(Integer::intValue)
+    .sum();
+                </code></pre>
+            </section>
+
+            <!-- Modern Java Summary -->
+            <section>
+                <h2>Modern Java Features Summary</h2>
+                <table style="font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Java Version</th>
+                            <th>Benefit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>var</code></td>
+                            <td>10+</td>
+                            <td>Less boilerplate, cleaner code</td>
+                        </tr>
+                        <tr>
+                            <td>Switch Expressions</td>
+                            <td>14+</td>
+                            <td>No fall-through, expression-based</td>
+                        </tr>
+                        <tr>
+                            <td>Records</td>
+                            <td>14+</td>
+                            <td>Eliminates data class boilerplate</td>
+                        </tr>
+                        <tr>
+                            <td>Pattern Matching</td>
+                            <td>16+</td>
+                            <td>Eliminates manual casts</td>
+                        </tr>
+                        <tr>
+                            <td>Stream API</td>
+                            <td>8+</td>
+                            <td>Functional, declarative programming</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Discussion Question -->
+            <section class="center">
+                <h2>Discussion Question</h2>
+                <div class="activity-box" style="text-align: left;">
+                    <h3>Which version would you choose to maintain?</h3>
+                    <p>Consider:</p>
+                    <ul>
+                        <li>Readability</li>
+                        <li>Maintainability</li>
+                        <li>Team understanding</li>
+                        <li>Performance (usually similar)</li>
+                    </ul>
+                    <p class="fragment"><strong>Answer:</strong> Modern Java features make code cleaner and easier to maintain!</p>
+                </div>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li class="fragment">Use <code>var</code> for local variables when type is obvious</li>
+                    <li class="fragment">Switch expressions eliminate fall-through bugs</li>
+                    <li class="fragment">Records replace boilerplate data classes</li>
+                    <li class="fragment">Pattern matching eliminates manual casts</li>
+                    <li class="fragment">Streams make code more declarative and readable</li>
+                    <li class="fragment">Modern Java = Less code, more clarity</li>
+                </ul>
+            </section>
+
+            <!-- Next -->
+            <section class="center">
+                <h2>Ready for Best Practices?</h2>
+                <p>Let's learn the Java Developer Mindset!</p>
+                <p style="margin-top: 2em;">
+                    <a href="segment6.html">Next: Segment 6 →</a> | 
+                    <a href="index.html">Back to Menu</a>
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [ RevealHighlight ]
+        });
+    </script>
+</body>
+</html>
+

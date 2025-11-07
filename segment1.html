@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment 1: Why Better Java Matters</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <style>
+        .reveal .slides section {
+            text-align: left;
+        }
+        .reveal .slides section.center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section class="center">
+                <h1>1️⃣ Warm-Up</h1>
+                <h2>Why "Better Java" Matters in 2025</h2>
+                <p style="color: #7f8c8d; margin-top: 2em;">⏱️ 10 minutes</p>
+                <p style="margin-top: 1em;"><a href="index.html">← Back to Menu</a></p>
+            </section>
+
+            <!-- Objective -->
+            <section>
+                <h2>Objective</h2>
+                <p>Set the tone — help beginners realize how Java has evolved and why coding style and practices matter.</p>
+                <ul>
+                    <li class="fragment">Understand Java's current state in 2025</li>
+                    <li class="fragment">Recognize the importance of maintainable code</li>
+                    <li class="fragment">Identify common beginner mistakes</li>
+                </ul>
+            </section>
+
+            <!-- Java is Still Thriving -->
+            <section>
+                <h2>Java is Still Thriving in 2025</h2>
+                <div class="fragment">
+                    <h3>Java 21+ Features</h3>
+                    <ul>
+                        <li>Virtual Threads (Project Loom)</li>
+                        <li>Pattern Matching</li>
+                        <li>Records & Sealed Classes</li>
+                        <li>Enhanced Switch Expressions</li>
+                    </ul>
+                </div>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>Where Java Excels</h3>
+                    <ul>
+                        <li>🌐 Backend Services & APIs</li>
+                        <li>☁️ Cloud-Native Applications</li>
+                        <li>🤖 AI/ML Integrations</li>
+                        <li>📱 Android Development</li>
+                        <li>🏢 Enterprise Applications</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Code Longevity -->
+            <section>
+                <h2>Code Longevity: Maintainability Matters</h2>
+                <blockquote>
+                    "Code is read much more often than it is written."
+                </blockquote>
+                <div class="fragment">
+                    <h3>Think About This:</h3>
+                    <ul>
+                        <li>Will you understand this code in 6 months?</li>
+                        <li>Can a teammate debug it easily?</li>
+                        <li>Can you add features without breaking things?</li>
+                        <li>Is it testable and maintainable?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Common Beginner Mistakes -->
+            <section>
+                <h2>Common Beginner Mistakes</h2>
+                <ul>
+                    <li class="fragment"><strong>Poor Naming:</strong> <code>x</code>, <code>a</code>, <code>temp</code></li>
+                    <li class="fragment"><strong>No Comments:</strong> Code that's unclear</li>
+                    <li class="fragment"><strong>Tight Coupling:</strong> Classes that depend too much on each other</li>
+                    <li class="fragment"><strong>Deep Nesting:</strong> Too many if-else levels</li>
+                    <li class="fragment"><strong>No Error Handling:</strong> Code that crashes unexpectedly</li>
+                    <li class="fragment"><strong>Magic Numbers:</strong> Unexplained constants</li>
+                </ul>
+            </section>
+
+            <!-- Activity: Code Comparison -->
+            <section>
+                <h2>Activity: Which Would You Rather Debug?</h2>
+                <p>Look at these two implementations of the same feature:</p>
+            </section>
+
+            <!-- Bad Example -->
+            <section>
+                <h2>Example 1: Poorly Written</h2>
+                <div class="code-bad">
+                    <h4>❌ Bad Code</h4>
+                    <pre><code class="java" data-trim data-line-numbers>
+// BAD EXAMPLE - Poorly written code
+public class x {
+    int a;
+    String b;
+    public void m(int c, String d) {
+        a = c;
+        b = d;
+        if (a > 0) {
+            if (b != null) {
+                if (b.length() > 5) {
+                    System.out.println("ok");
+                }
+            }
+        }
+    }
+    public static void main(String[] args) {
+        x obj = new x();
+        obj.m(10, "hello world");
+    }
+}
+                    </code></pre>
+                </div>
+                <p class="fragment"><strong>Problems:</strong> Unclear names, deep nesting, no encapsulation</p>
+                <p style="margin-top: 1em; font-size: 0.8em;">
+                    <a href="code-examples/BadExample.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Good Example -->
+            <section>
+                <h2>Example 2: Well-Structured</h2>
+                <div class="code-good">
+                    <h4>✅ Good Code</h4>
+                    <pre><code class="java" data-trim data-line-numbers>
+// GOOD EXAMPLE - Well-structured code
+public class UserAccount {
+    private int userId;
+    private String username;
+    
+    public UserAccount(int userId, String username) {
+        this.userId = userId;
+        this.username = username;
+    }
+    
+    public void validateAndDisplay() {
+        if (isValidUser()) {
+            displayUserInfo();
+        }
+    }
+    
+    private boolean isValidUser() {
+        return userId > 0 && username != null 
+            && username.length() > 5;
+    }
+    
+    private void displayUserInfo() {
+        System.out.println("User ID: " + userId);
+        System.out.println("Username: " + username);
+    }
+    
+    public static void main(String[] args) {
+        UserAccount account = new UserAccount(10, "hello world");
+        account.validateAndDisplay();
+    }
+}
+                    </code></pre>
+                </div>
+                <p class="fragment"><strong>Benefits:</strong> Clear names, proper encapsulation, readable logic</p>
+                <p style="margin-top: 1em; font-size: 0.8em;">
+                    <a href="code-examples/GoodExample.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Side by Side Comparison -->
+            <section>
+                <h2>Side-by-Side Comparison</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Bad</h4>
+                        <ul style="font-size: 0.8em;">
+                            <li>Class name: <code>x</code></li>
+                            <li>Variables: <code>a</code>, <code>b</code></li>
+                            <li>Method: <code>m()</code></li>
+                            <li>Deep nesting (3 levels)</li>
+                            <li>No encapsulation</li>
+                            <li>No validation logic separation</li>
+                        </ul>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ Good</h4>
+                        <ul style="font-size: 0.8em;">
+                            <li>Class name: <code>UserAccount</code></li>
+                            <li>Variables: <code>userId</code>, <code>username</code></li>
+                            <li>Methods: <code>validateAndDisplay()</code></li>
+                            <li>Flat structure</li>
+                            <li>Private fields with methods</li>
+                            <li>Separated validation logic</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Discussion Question -->
+            <section class="center">
+                <h2>Discussion Question</h2>
+                <div class="activity-box" style="text-align: left;">
+                    <h3>Which one would you rather debug in 2026?</h3>
+                    <p>Imagine you're debugging a production issue at 2 AM. Which codebase would you prefer to work with?</p>
+                    <p class="fragment"><strong>Key Takeaway:</strong> Writing clean code is an investment in your future self and your team.</p>
+                </div>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li class="fragment">Java is evolving and remains relevant in 2025</li>
+                    <li class="fragment">Code maintainability > "just making it work"</li>
+                    <li class="fragment">Good naming and structure save time</li>
+                    <li class="fragment">Your future self will thank you</li>
+                </ul>
+            </section>
+
+            <!-- Next -->
+            <section class="center">
+                <h2>Ready for More?</h2>
+                <p>Let's dive into the basics done right!</p>
+                <p style="margin-top: 2em;">
+                    <a href="segment2.html">Next: Segment 2 →</a> | 
+                    <a href="index.html">Back to Menu</a>
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [ RevealHighlight ]
+        });
+    </script>
+</body>
+</html>
+

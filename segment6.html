@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment 6: The Java Developer Mindset</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <style>
+        .reveal .slides section {
+            text-align: left;
+        }
+        .reveal .slides section.center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section class="center">
+                <h1>6️⃣ The Java Developer Mindset</h1>
+                <h2>Best Practices to Adopt Early</h2>
+                <p style="color: #7f8c8d; margin-top: 2em;">⏱️ 15 minutes</p>
+                <p style="margin-top: 1em;"><a href="index.html">← Back to Menu</a></p>
+            </section>
+
+            <!-- Objective -->
+            <section>
+                <h2>Objective</h2>
+                <p>Wrap up with habits that build strong developers.</p>
+                <ul>
+                    <li class="fragment">Writing testable code</li>
+                    <li class="fragment">Importance of Git & Version Control</li>
+                    <li class="fragment">Reading JavaDocs & API documentation</li>
+                    <li class="fragment">Following style guides</li>
+                    <li class="fragment">Continuous learning</li>
+                </ul>
+            </section>
+
+            <!-- Writing Testable Code -->
+            <section>
+                <h2>Writing Testable Code</h2>
+                <p><strong>Principle:</strong> Design code to be easily testable from the start</p>
+                <div class="fragment">
+                    <h3>Key Practices:</h3>
+                    <ul>
+                        <li>Dependency Injection - depend on interfaces</li>
+                        <li>Avoid static dependencies</li>
+                        <li>Keep methods focused and small</li>
+                        <li>Separate business logic from I/O</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Testable Code Example -->
+            <section>
+                <h2>Testable Code Example</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Hard to Test</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public class HardToTest {
+    private DatabaseConnection db = 
+        new DatabaseConnection();  // Hard dependency
+    
+    public void processOrder(String id) {
+        Order order = db.getOrder(id);  // Can't test without DB
+        // ...
+    }
+}
+                        </code></pre>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ Testable</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public class TestableCode {
+    private OrderRepository repo;  // Interface
+    
+    public TestableCode(OrderRepository repo) {
+        this.repo = repo;  // Dependency injection
+    }
+    
+    public void processOrder(String id) {
+        Order order = repo.findById(id);  // Can mock
+        // ...
+    }
+}
+                        </code></pre>
+                    </div>
+                </div>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/TestableCode.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- JUnit Introduction -->
+            <section>
+                <h2>JUnit: Testing Framework</h2>
+                <p><strong>Why Test?</strong></p>
+                <ul>
+                    <li class="fragment">Catch bugs early</li>
+                    <li class="fragment">Document expected behavior</li>
+                    <li class="fragment">Enable confident refactoring</li>
+                    <li class="fragment">Improve code design</li>
+                    <li class="fragment">Serve as examples</li>
+                </ul>
+            </section>
+
+            <!-- JUnit Example -->
+            <section>
+                <h2>JUnit Test Example</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+@Test
+@DisplayName("Should add two positive numbers")
+void testAddPositiveNumbers() {
+    // Arrange
+    Calculator calc = new Calculator();
+    int a = 5, b = 3;
+    
+    // Act
+    int result = calc.add(a, b);
+    
+    // Assert
+    assertEquals(8, result);
+}
+
+@Test
+@DisplayName("Should throw exception when dividing by zero")
+void testDivideByZero() {
+    Calculator calc = new Calculator();
+    
+    IllegalArgumentException exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> calc.divide(10, 0)
+    );
+    
+    assertEquals("Cannot divide by zero", exception.getMessage());
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/JUnitExample.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Test Structure -->
+            <section>
+                <h2>Test Structure: AAA Pattern</h2>
+                <ol>
+                    <li class="fragment"><strong>Arrange</strong> - Set up test data</li>
+                    <li class="fragment"><strong>Act</strong> - Execute the method being tested</li>
+                    <li class="fragment"><strong>Assert</strong> - Verify the results</li>
+                </ol>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>Common Assertions:</h3>
+                    <ul style="font-size: 0.9em;">
+                        <li><code>assertEquals(expected, actual)</code></li>
+                        <li><code>assertTrue(condition)</code></li>
+                        <li><code>assertFalse(condition)</code></li>
+                        <li><code>assertThrows(Exception.class, () -> method())</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Git & Version Control -->
+            <section>
+                <h2>Git & Version Control</h2>
+                <p><strong>Why it's essential:</strong></p>
+                <ul>
+                    <li class="fragment">Track changes over time</li>
+                    <li class="fragment">Collaborate with teams</li>
+                    <li class="fragment">Roll back mistakes</li>
+                    <li class="fragment">Branch for features</li>
+                    <li class="fragment">Code review process</li>
+                </ul>
+            </section>
+
+            <!-- Git Best Practices -->
+            <section>
+                <h2>Git Best Practices</h2>
+                <div class="fragment">
+                    <h3>✅ Good Commit Messages:</h3>
+                    <pre><code>
+feat: Add user authentication
+fix: Resolve null pointer in order processing
+refactor: Extract validation logic
+docs: Update API documentation
+                    </code></pre>
+                </div>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>✅ Commit Often:</h3>
+                    <ul>
+                        <li>Small, logical commits</li>
+                        <li>One feature per commit</li>
+                        <li>Meaningful commit messages</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- JavaDocs -->
+            <section>
+                <h2>Reading JavaDocs & API Documentation</h2>
+                <p><strong>JavaDocs are your friend!</strong></p>
+                <ul>
+                    <li class="fragment">Official Java API: <code>docs.oracle.com/javase</code></li>
+                    <li class="fragment">IDE integration - hover over methods</li>
+                    <li class="fragment">Learn method signatures, parameters, return types</li>
+                    <li class="fragment>Understand exceptions thrown</li>
+                    <li class="fragment">See usage examples</li>
+                </ul>
+            </section>
+
+            <!-- JavaDoc Example -->
+            <section>
+                <h2>JavaDoc Example</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+/**
+ * Calculates the total price including tax.
+ * 
+ * @param basePrice the base price before tax (must be positive)
+ * @param taxRate the tax rate as a decimal (e.g., 0.08 for 8%)
+ * @return the total price including tax
+ * @throws IllegalArgumentException if basePrice is negative or taxRate is invalid
+ * @since 1.0
+ */
+public double calculateTotalPrice(double basePrice, double taxRate) {
+    if (basePrice < 0) {
+        throw new IllegalArgumentException("Base price cannot be negative");
+    }
+    return basePrice * (1 + taxRate);
+}
+                </code></pre>
+            </section>
+
+            <!-- Style Guides -->
+            <section>
+                <h2>Following Style Guides</h2>
+                <p><strong>Why consistency matters:</strong></p>
+                <ul>
+                    <li class="fragment">Easier code reviews</li>
+                    <li class="fragment">Faster onboarding</li>
+                    <li class="fragment">Reduced cognitive load</li>
+                    <li class="fragment">Professional appearance</li>
+                </ul>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>Popular Style Guides:</h3>
+                    <ul>
+                        <li>Google Java Style Guide</li>
+                        <li>Oracle Code Conventions</li>
+                        <li>Your team's style guide</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Continuous Learning -->
+            <section>
+                <h2>Continuous Learning</h2>
+                <p><strong>How to keep up with Java trends:</strong></p>
+                <ul>
+                    <li class="fragment"><strong>Official Sources:</strong> Oracle Java Blog, OpenJDK</li>
+                    <li class="fragment"><strong>Community:</strong> Java subreddit, Stack Overflow</li>
+                    <li class="fragment"><strong>Conferences:</strong> JavaOne, Devoxx, local meetups</li>
+                    <li class="fragment"><strong>Books:</strong> "Effective Java", "Clean Code"</li>
+                    <li class="fragment"><strong>Practice:</strong> Build projects, contribute to open source</li>
+                </ul>
+            </section>
+
+            <!-- Learning Resources -->
+            <section>
+                <h2>Recommended Learning Resources</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h3>📚 Books</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li>Effective Java (Joshua Bloch)</li>
+                            <li>Clean Code (Robert Martin)</li>
+                            <li>Java: The Complete Reference</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>🌐 Online</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li>Oracle Java Tutorials</li>
+                            <li>Baeldung Java Guides</li>
+                            <li>JavaWorld Articles</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity: Reflection -->
+            <section>
+                <h2>Activity: Reflection & Discussion</h2>
+                <div class="activity-box">
+                    <h3>What will you change in your code after today?</h3>
+                    <p>Think about:</p>
+                    <ul>
+                        <li>Which practice will you adopt first?</li>
+                        <li>What's your biggest takeaway?</li>
+                        <li>What will you practice this week?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quick Reflection -->
+            <section class="center">
+                <h2>Quick Reflection</h2>
+                <div class="activity-box" style="text-align: left;">
+                    <h3>Each participant shares 1 takeaway:</h3>
+                    <ul>
+                        <li>What surprised you?</li>
+                        <li>What will you implement?</li>
+                        <li>What do you want to learn more about?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li class="fragment">Write testable code from the start</li>
+                    <li class="fragment">Use version control (Git) religiously</li>
+                    <li class="fragment">Read JavaDocs - they're comprehensive</li>
+                    <li class="fragment">Follow style guides for consistency</li>
+                    <li class="fragment">Never stop learning - Java evolves</li>
+                    <li class="fragment">Practice regularly - build projects</li>
+                </ul>
+            </section>
+
+            <!-- Final Slide -->
+            <section class="center">
+                <h1>🎉 Congratulations!</h1>
+                <h2>You're on the path to writing better Java</h2>
+                <div style="margin-top: 2em; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    <h3>Remember:</h3>
+                    <ul>
+                        <li>Clean code is a journey, not a destination</li>
+                        <li>Practice makes perfect</li>
+                        <li>Learn from code reviews</li>
+                        <li>Share knowledge with others</li>
+                    </ul>
+                </div>
+                <p style="margin-top: 2em;">
+                    <a href="bonus.html">🎁 Bonus Challenge →</a> | 
+                    <a href="index.html">Back to Menu</a>
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [ RevealHighlight ]
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment 3: Object-Oriented Thinking</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <style>
+        .reveal .slides section {
+            text-align: left;
+        }
+        .reveal .slides section.center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section class="center">
+                <h1>3️⃣ Object-Oriented Thinking</h1>
+                <h2>Done Right</h2>
+                <p style="color: #7f8c8d; margin-top: 2em;">⏱️ 25 minutes</p>
+                <p style="margin-top: 1em;"><a href="index.html">← Back to Menu</a></p>
+            </section>
+
+            <!-- Objective -->
+            <section>
+                <h2>Objective</h2>
+                <p>Teach how to think in objects, not just use classes.</p>
+                <ul>
+                    <li class="fragment">Understand Cohesion & Coupling</li>
+                    <li class="fragment">Master Encapsulation</li>
+                    <li class="fragment">Apply DRY principle</li>
+                    <li class="fragment">Write meaningful constructors</li>
+                </ul>
+            </section>
+
+            <!-- Cohesion & Coupling -->
+            <section>
+                <h2>Cohesion & Coupling</h2>
+                <div class="fragment">
+                    <h3>Cohesion: How well do class members belong together?</h3>
+                    <ul>
+                        <li><strong>High Cohesion:</strong> Class does one thing well ✅</li>
+                        <li><strong>Low Cohesion:</strong> Class does multiple unrelated things ❌</li>
+                    </ul>
+                </div>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>Coupling: How dependent are classes on each other?</h3>
+                    <ul>
+                        <li><strong>Loose Coupling:</strong> Classes are independent ✅</li>
+                        <li><strong>Tight Coupling:</strong> Classes are highly dependent ❌</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Cohesion Example -->
+            <section>
+                <h2>Cohesion Example</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Low Cohesion</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public class Utility {
+    boolean isValidEmail(String email) { }
+    void sendEmail(String to, String subject) { }
+    int calculateTax(double amount) { }
+    void printReport() { }
+}
+                        </code></pre>
+                        <p style="font-size: 0.8em;">Multiple unrelated responsibilities</p>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ High Cohesion</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public class EmailValidator {
+    boolean isValidEmail(String email) { }
+    boolean isValidDomain(String email) { }
+    String extractDomain(String email) { }
+}
+                        </code></pre>
+                        <p style="font-size: 0.8em;">All methods related to email validation</p>
+                    </div>
+                </div>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/CohesionCouplingDemo.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Coupling Example -->
+            <section>
+                <h2>Coupling Example</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Tight Coupling</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public class OrderServiceBad {
+    private CreditCardProcessor processor = 
+        new CreditCardProcessor();  // Hard dependency!
+    
+    void processOrder(Order order) {
+        processor.charge(order.getAmount());
+    }
+}
+                        </code></pre>
+                        <p style="font-size: 0.8em;">Hard to test, hard to change</p>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ Loose Coupling</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public class OrderService {
+    private PaymentProcessor processor;  // Interface
+    
+    public OrderService(PaymentProcessor p) {
+        this.processor = p;  // Dependency injection
+    }
+    
+    void processOrder(Order order) {
+        processor.processPayment(order.getAmount());
+    }
+}
+                        </code></pre>
+                        <p style="font-size: 0.8em;">Easy to test, easy to change</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Encapsulation -->
+            <section>
+                <h2>Encapsulation: Data Hiding</h2>
+                <p><strong>Principle:</strong> Hide internal details, expose only what's necessary</p>
+                <div class="fragment">
+                    <h3>Benefits:</h3>
+                    <ul>
+                        <li>Data integrity through validation</li>
+                        <li>Flexibility to change implementation</li>
+                        <li>Security through controlled access</li>
+                        <li>Maintainability with single point of change</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Encapsulation Bad Example -->
+            <section>
+                <h2>❌ Bad: No Encapsulation</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+public class BadStudent {
+    public String name;      // Direct access - anyone can modify
+    public int age;          // No validation
+    public double gpa;       // Can be set to invalid values
+    
+    // No control over data integrity
+}
+
+// Usage - problems!
+BadStudent student = new BadStudent();
+student.age = -5;        // Invalid!
+student.gpa = 10.0;     // Invalid!
+                </code></pre>
+            </section>
+
+            <!-- Encapsulation Good Example -->
+            <section>
+                <h2>✅ Good: Proper Encapsulation</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+public class GoodStudent {
+    private String name;    // Private - hidden
+    private int age;
+    private double gpa;
+    
+    // Constructor with validation
+    public GoodStudent(String name, int age, double gpa) {
+        setName(name);
+        setAge(age);
+        setGpa(gpa);
+    }
+    
+    // Getters - controlled access
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public double getGpa() { return gpa; }
+    
+    // Setters with validation
+    public void setAge(int age) {
+        if (age < 0 || age > 150) {
+            throw new IllegalArgumentException("Invalid age");
+        }
+        this.age = age;
+    }
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/EncapsulationExample.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- DRY Principle -->
+            <section>
+                <h2>DRY: Don't Repeat Yourself</h2>
+                <p><strong>Principle:</strong> Every piece of knowledge should have a single representation</p>
+                <div class="fragment">
+                    <h3>Ways to Achieve DRY:</h3>
+                    <ul>
+                        <li><strong>Abstraction:</strong> Extract common behavior</li>
+                        <li><strong>Inheritance:</strong> Share code through hierarchy</li>
+                        <li><strong>Composition:</strong> Reuse through objects</li>
+                        <li><strong>Methods:</strong> Extract repeated logic</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- DRY Example -->
+            <section>
+                <h2>DRY Example</h2>
+                <div class="code-comparison">
+                    <div class="code-bad">
+                        <h4>❌ Repetitive Code</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public void processOrder1() {
+    validate();
+    calculate();
+    save();
+    sendEmail("order1@example.com");
+}
+
+public void processOrder2() {
+    validate();
+    calculate();
+    save();
+    sendEmail("order2@example.com");
+}
+                        </code></pre>
+                    </div>
+                    <div class="code-good">
+                        <h4>✅ DRY Code</h4>
+                        <pre><code class="java" data-trim style="font-size: 0.7em;">
+public void processOrder(String email) {
+    validate();
+    calculate();
+    save();
+    sendEmail(email);
+}
+                        </code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Constructors -->
+            <section>
+                <h2>Writing Meaningful Constructors</h2>
+                <div class="fragment">
+                    <h3>✅ Good Constructor Practices:</h3>
+                    <ul>
+                        <li>Initialize all required fields</li>
+                        <li>Validate input parameters</li>
+                        <li>Set sensible defaults</li>
+                        <li>Keep constructors simple</li>
+                    </ul>
+                </div>
+                <div class="fragment" style="margin-top: 1em;">
+                    <h3>❌ Avoid in Constructors:</h3>
+                    <ul>
+                        <li>Complex business logic</li>
+                        <li>Heavy computations</li>
+                        <li>Calling overridable methods</li>
+                        <li>Throwing checked exceptions (if possible)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Constructor Example -->
+            <section>
+                <h2>Constructor Example</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+// ✅ Good Constructor
+public class Book {
+    private String isbn;
+    private String title;
+    private String author;
+    private boolean isAvailable;
+    
+    public Book(String isbn, String title, String author) {
+        if (isbn == null || isbn.trim().isEmpty()) {
+            throw new IllegalArgumentException("ISBN required");
+        }
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title required");
+        }
+        
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.isAvailable = true;  // Sensible default
+    }
+}
+                </code></pre>
+            </section>
+
+            <!-- Mini Project Introduction -->
+            <section>
+                <h2>Mini Project: Library Management System</h2>
+                <div class="activity-box">
+                    <h3>Build a simple Library Management skeleton</h3>
+                    <p>We'll create classes for:</p>
+                    <ul>
+                        <li><code>Book</code> - Represents a book</li>
+                        <li><code>Member</code> - Represents a library member</li>
+                        <li><code>Library</code> - Manages books and members</li>
+                    </ul>
+                    <p style="margin-top: 1em;"><strong>Task:</strong> Identify where abstraction, encapsulation, and cohesion apply!</p>
+                </div>
+            </section>
+
+            <!-- Book Class -->
+            <section>
+                <h2>Book Class</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+public class Book {
+    // Encapsulated fields
+    private String isbn;
+    private String title;
+    private String author;
+    private boolean isAvailable;
+    
+    // Constructor with validation
+    public Book(String isbn, String title, String author) {
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.isAvailable = true;
+    }
+    
+    // Business logic methods
+    public void checkout() {
+        if (!isAvailable) {
+            throw new IllegalStateException("Book already checked out");
+        }
+        this.isAvailable = false;
+    }
+    
+    public void returnBook() {
+        this.isAvailable = true;
+    }
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/LibraryManagement/Book.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Member Class -->
+            <section>
+                <h2>Member Class</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+public class Member {
+    private String memberId;
+    private String name;
+    private List&lt;Book&gt; borrowedBooks;
+    private int maxBorrowLimit;
+    
+    public Member(String memberId, String name, String email) {
+        this.memberId = memberId;
+        this.name = name;
+        this.borrowedBooks = new ArrayList&lt;&gt;();
+        this.maxBorrowLimit = 5;
+    }
+    
+    public boolean canBorrowMore() {
+        return borrowedBooks.size() &lt; maxBorrowLimit;
+    }
+    
+    public void borrowBook(Book book) {
+        if (!canBorrowMore()) {
+            throw new IllegalStateException("Reached borrow limit");
+        }
+        book.checkout();
+        borrowedBooks.add(book);
+    }
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/LibraryManagement/Member.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Library Class -->
+            <section>
+                <h2>Library Class</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+public class Library {
+    private String name;
+    private List&lt;Book&gt; books;
+    private List&lt;Member&gt; members;
+    
+    public Library(String name) {
+        this.name = name;
+        this.books = new ArrayList&lt;&gt;();
+        this.members = new ArrayList&lt;&gt;();
+    }
+    
+    public void checkoutBook(String memberId, String isbn) {
+        Member member = findMemberById(memberId);
+        Book book = findBookByIsbn(isbn);
+        member.borrowBook(book);
+    }
+    
+    public List&lt;Book&gt; findBooksByAuthor(String author) {
+        return books.stream()
+            .filter(b -&gt; b.getAuthor().equals(author))
+            .collect(Collectors.toList());
+    }
+}
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/LibraryManagement/Library.java" target="_blank">View full file →</a>
+                </p>
+            </section>
+
+            <!-- Library Demo -->
+            <section>
+                <h2>Library Management Demo</h2>
+                <pre><code class="java" data-trim data-line-numbers>
+Library library = new Library("City Central Library");
+
+// Add books
+Book book1 = new Book("978-0134685991", "Effective Java", "Joshua Bloch", 2018);
+library.addBook(book1);
+
+// Register members
+Member member1 = new Member("M001", "Alice", "alice@example.com");
+library.registerMember(member1);
+
+// Checkout
+library.checkoutBook("M001", "978-0134685991");
+
+// Find books
+List&lt;Book&gt; books = library.findBooksByAuthor("Joshua Bloch");
+                </code></pre>
+                <p style="font-size: 0.8em; margin-top: 1em;">
+                    <a href="code-examples/LibraryManagement/LibraryDemo.java" target="_blank">View full demo →</a>
+                </p>
+            </section>
+
+            <!-- Activity Discussion -->
+            <section>
+                <h2>Activity Discussion</h2>
+                <div class="activity-box">
+                    <h3>Where do OOP principles apply?</h3>
+                    <ul>
+                        <li class="fragment"><strong>Encapsulation:</strong> Private fields with public methods</li>
+                        <li class="fragment"><strong>Cohesion:</strong> Each class has a single responsibility</li>
+                        <li class="fragment"><strong>Coupling:</strong> Library depends on Book and Member, but loosely</li>
+                        <li class="fragment"><strong>Abstraction:</strong> Methods hide implementation details</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section>
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li class="fragment">High cohesion: Classes should do one thing well</li>
+                    <li class="fragment">Loose coupling: Depend on abstractions, not concrete classes</li>
+                    <li class="fragment">Encapsulation: Hide data, expose behavior</li>
+                    <li class="fragment">DRY: Extract common code into methods/classes</li>
+                    <li class="fragment">Think in objects: Model real-world concepts</li>
+                </ul>
+            </section>
+
+            <!-- Next -->
+            <section class="center">
+                <h2>Ready for Clean Code?</h2>
+                <p>Let's learn industry-standard practices!</p>
+                <p style="margin-top: 2em;">
+                    <a href="segment4.html">Next: Segment 4 →</a> | 
+                    <a href="index.html">Back to Menu</a>
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [ RevealHighlight ]
+        });
+    </script>
+</body>
+</html>
+
