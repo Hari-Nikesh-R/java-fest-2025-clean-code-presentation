@@ -6,7 +6,7 @@ A hands-on, interactive, and future-focused Java presentation designed for begin
 
 This is a Reveal.js presentation with 6 main segments plus a bonus section, covering Java best practices from basics to modern features.
 
-**Total Duration:** 100–110 Minutes  
+**Total Duration:** 90 Minutes  
 **Level:** Beginner
 
 ## 🗂️ Project Structure
@@ -53,7 +53,7 @@ java-fest-preparation/
         └── LibraryDemo.java
 ```
 
-## 🚀 Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 
